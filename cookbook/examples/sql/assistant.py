@@ -6,7 +6,6 @@ from pathlib import Path
 from phi.assistant import Assistant
 from phi.tools.sql import SQLTools
 from phi.tools.file import FileTools
-from phi.tools.webrequests import WebRequestsTools
 from phi.llm.openai import OpenAIChat
 from phi.embedder.openai import OpenAIEmbedder
 from phi.knowledge.json import JSONKnowledgeBase
@@ -111,7 +110,7 @@ def get_sql_assistant(
         read_chat_history=True,
         search_knowledge=True,
         read_tool_call_history=True,
-        tools=[SQLTools(db_url=db_url), FileTools(base_dir=sql_queries_dir), WebRequestsTools()],
+        tools=[SQLTools(db_url=db_url), FileTools(base_dir=sql_queries_dir)],
         debug_mode=debug_mode,
         add_chat_history_to_messages=True,
         num_history_messages=4,

@@ -64,7 +64,9 @@ def main() -> None:
     # Get webrequests_tools_enabled from session state if set
     webrequests_tools_enabled = st.session_state["webrequests_tools_enabled"]
     # Checkbox for enabling shell tools
-    webrequests_tools = st.sidebar.checkbox("Web Requests Tools", value=webrequests_tools_enabled, help="Enable web requests tools.")
+    webrequests_tools = st.sidebar.checkbox(
+        "Web Requests Tools", value=webrequests_tools_enabled, help="Enable web requests tools."
+    )
     if webrequests_tools_enabled != webrequests_tools:
         st.session_state["webrequests_tools_enabled"] = webrequests_tools
         webrequests_tools_enabled = webrequests_tools

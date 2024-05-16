@@ -47,4 +47,3 @@ class WebRequestsTools(Toolkit):
         except Exception as e:
             logger.error(f"Error making POST request: {e}")
             return f"Error making POST request: {e}"
-
