@@ -46,3 +46,4 @@ tmp
 
 .ipynb_checkpoints
 .streamlit/secrets.toml
+cookbook/llm_os/phi

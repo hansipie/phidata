@@ -111,7 +111,7 @@ def get_sql_assistant(
         read_chat_history=True,
         search_knowledge=True,
         read_tool_call_history=True,
-        tools=[SQLTools(db_url=db_url), FileTools(base_dir=sql_queries_dir), WebRequestsTools(base_dir=sql_queries_dir)],
+        tools=[SQLTools(db_url=db_url), FileTools(base_dir=sql_queries_dir)],
         debug_mode=debug_mode,
         add_chat_history_to_messages=True,
         num_history_messages=4,

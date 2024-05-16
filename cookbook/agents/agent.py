@@ -11,7 +11,7 @@ from phi.tools.calculator import Calculator
 from phi.tools.duckduckgo import DuckDuckGo
 from phi.tools.yfinance import YFinanceTools
 from phi.tools.file import FileTools
-#from phi.tools.webrequests import WebRequestsTools
+from phi.tools.webrequests import WebRequestsTools
 from phi.llm.openai import OpenAIChat
 from phi.knowledge import AssistantKnowledge
 from phi.embedder.openai import OpenAIEmbedder
@@ -73,8 +73,7 @@ def get_agent(
             "You can use the `read_file` tool to read a file, `save_file` to save a file, and `list_files` to list files in the working directory."
         )
     if webrequests_tools:
-        #tools.append(WebRequestsTools(base_dir=cwd))
-        tools.append(FileTools(base_dir=cwd))
+        tools.append(WebRequestsTools(base_dir=cwd))
         extra_instructions.append(
             "You can use the `get` tool to make a GET request, `post` to make a POST request, and `download` to download a file."
         )
