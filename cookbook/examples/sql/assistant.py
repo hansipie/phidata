@@ -6,7 +6,6 @@ from pathlib import Path
 from phi.assistant import Assistant
 from phi.tools.sql import SQLTools
 from phi.tools.file import FileTools
-from phi.tools.webrequests import WebRequestsTools
 from phi.llm.openai import OpenAIChat
 from phi.embedder.openai import OpenAIEmbedder
 from phi.knowledge.json import JSONKnowledgeBase

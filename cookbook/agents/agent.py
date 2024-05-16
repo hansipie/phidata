@@ -73,7 +73,7 @@ def get_agent(
             "You can use the `read_file` tool to read a file, `save_file` to save a file, and `list_files` to list files in the working directory."
         )
     if webrequests_tools:
-        tools.append(WebRequestsTools(base_dir=cwd))
+        tools.append(WebRequestsTools())
         extra_instructions.append(
             "You can use the `get` tool to make a GET request, `post` to make a POST request, and `download` to download a file."
         )
