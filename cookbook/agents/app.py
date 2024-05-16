@@ -58,6 +58,18 @@ def main() -> None:
         file_tools_enabled = file_tools
         restart_assistant()
 
+    # Enable requests tools
+    if "webrequests_tools_enabled" not in st.session_state:
+        st.session_state["webrequests_tools_enabled"] = True
+    # Get webrequests_tools_enabled from session state if set
+    webrequests_tools_enabled = st.session_state["webrequests_tools_enabled"]
+    # Checkbox for enabling shell tools
+    webrequests_tools = st.sidebar.checkbox("Web Requests Tools", value=webrequests_tools_enabled, help="Enable web requests tools.")
+    if webrequests_tools_enabled != webrequests_tools:
+        st.session_state["webrequests_tools_enabled"] = webrequests_tools
+        webrequests_tools_enabled = webrequests_tools
+        restart_assistant()
+
     # Enable Web Search via DuckDuckGo
     if "ddg_search_enabled" not in st.session_state:
         st.session_state["ddg_search_enabled"] = True
@@ -158,6 +170,7 @@ def main() -> None:
             calculator=calculator_enabled,
             ddg_search=ddg_search_enabled,
             file_tools=file_tools_enabled,
+            webrequests_tools=webrequests_tools_enabled,
             finance_tools=finance_tools_enabled,
             data_analyst=data_analyst_enabled,
             python_assistant=python_assistant_enabled,
@@ -274,6 +287,7 @@ def main() -> None:
                 calculator=calculator_enabled,
                 ddg_search=ddg_search_enabled,
                 file_tools=file_tools_enabled,
+                request_tools=webrequests_tools_enabled,
                 finance_tools=finance_tools_enabled,
                 data_analyst=data_analyst_enabled,
                 python_assistant=python_assistant_enabled,
