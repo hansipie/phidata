@@ -1,7 +1,6 @@
 from phi.tools import Toolkit
 from phi.utils.log import logger
 
-
 class WebRequestsTools(Toolkit):
     def __init__(
         self,
@@ -23,12 +22,14 @@ class WebRequestsTools(Toolkit):
         """
         import requests
 
+        logger.info(f"GET request: {url}")
         try:
-            logger.debug(f"GET request to: {url}")
             response = requests.get(url)
+            logger.debug(f"GET response status code: {response.status_code}")
+            logger.debug(f"GET response size: {response.headers['Content-Length']}")
             return response.text
         except Exception as e:
-            logger.error(f"Error making GET request: {e}")
+            logger.warning(f"Error making GET request: {e}")
             return f"Error making GET request: {e}"
 
     def post_method(self, url: str, payload: str = "") -> str:
@@ -40,10 +41,12 @@ class WebRequestsTools(Toolkit):
         """
         import requests
 
+        logger.info(f"POST request: {url}")
         try:
-            logger.debug(f"POST request to: {url}")
             response = requests.post(url, data=payload)
+            logger.debug(f"POST response status code: {response.status_code}")
+            logger.debug(f"POST response size: {response.headers['Content-Length']}")
             return response.text
         except Exception as e:
-            logger.error(f"Error making POST request: {e}")
+            logger.warning(f"Error making POST request: {e}")
             return f"Error making POST request: {e}"
