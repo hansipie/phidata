@@ -1,6 +1,7 @@
+from typing import Optional
 from phi.tools import Toolkit
 from phi.utils.log import logger
-
+from requests.exceptions import HTTPError
 
 class WebRequestsTools(Toolkit):
     def __init__(
@@ -15,7 +16,7 @@ class WebRequestsTools(Toolkit):
         if post_method:
             self.register(self.post_method)
 
-    def get_method(self, url: str) -> str:
+    def get_method(self, url) -> str:
         """This function sends a GET request to a URL and returns the content.
 
         :param url: The url of the request.
@@ -26,12 +27,17 @@ class WebRequestsTools(Toolkit):
         logger.info(f"GET request: {url}")
         try:
             response = requests.get(url)
-            logger.debug(f"GET response status code: {response.status_code}")
-            logger.debug(f"GET response size: {response.headers['Content-Length']}")
-            return response.text
+            response.raise_for_status()
+        except HTTPError as http_e:
+            logger.warning(f"HTTP error: {http_e}")
+            return f"HTTP error: {http_e}"
         except Exception as e:
-            logger.warning(f"Error making GET request: {e}")
-            return f"Error making GET request: {e}"
+            logger.warning(f"Other error: {e}")
+            return f"Other error: {e}"
+        else:
+            logger.debug(f"HTTP GET response status code: {response.status_code}")
+            logger.debug(f"HTTP GET response size: {response.headers['Content-Length']}")
+            return response.content
 
     def post_method(self, url: str, payload: str = "") -> str:
         """This function sends a POST request with an optionnal payload to a URL and returns the content.
@@ -45,9 +51,14 @@ class WebRequestsTools(Toolkit):
         logger.info(f"POST request: {url}")
         try:
             response = requests.post(url, data=payload)
-            logger.debug(f"POST response status code: {response.status_code}")
-            logger.debug(f"POST response size: {response.headers['Content-Length']}")
-            return response.text
+            response.raise_for_status()
+        except HTTPError as http_e:
+            logger.warning(f"HTTP error: {http_e}")
+            return f"HTTP error: {http_e}"
         except Exception as e:
-            logger.warning(f"Error making POST request: {e}")
-            return f"Error making POST request: {e}"
+            logger.warning(f"Other HTTP error: {e}")
+            return f"Other HTTP error: {e}"
+        else:
+            logger.debug(f"HTTP POST response status code: {response.status_code}")
+            logger.debug(f"HPPT POST response size: {response.headers['Content-Length']}")
+            return response.content
