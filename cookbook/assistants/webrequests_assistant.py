@@ -14,6 +14,6 @@ assistant = Assistant(
 )
 
 try:
-    assistant.print_response("Using an API call give me the actual bitcoin price.", stream=False)
+    assistant.print_response("Using  the API call of your choise, give me the actual bitcoin price.", stream=False)
 except Exception as e:
     print(e)
