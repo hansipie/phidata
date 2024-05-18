@@ -9,8 +9,8 @@ assistant = Assistant(
     tools=[WebRequestsTools()],
     show_tool_calls=True,
     description="Retrieve bitcoin price.",
-    debug_mode=True, 
-    markdown=True
+    debug_mode=True,
+    markdown=True,
 )
 
 try:

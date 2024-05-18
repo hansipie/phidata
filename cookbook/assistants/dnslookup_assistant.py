@@ -8,8 +8,8 @@ assistant = Assistant(
     tools=[DNSLookupTools()],
     show_tool_calls=True,
     description="Make DNS request to get hostnames or IPs.",
-    debug_mode=True, 
-    markdown=True
+    debug_mode=True,
+    markdown=True,
 )
 
 try:

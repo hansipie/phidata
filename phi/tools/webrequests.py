@@ -1,6 +1,7 @@
 from phi.tools import Toolkit
 from phi.utils.log import logger
 
+
 class WebRequestsTools(Toolkit):
     def __init__(
         self,
