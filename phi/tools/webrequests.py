@@ -1,7 +1,7 @@
-from typing import Optional
 from phi.tools import Toolkit
 from phi.utils.log import logger
 from requests.exceptions import HTTPError
+
 
 class WebRequestsTools(Toolkit):
     def __init__(
