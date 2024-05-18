@@ -26,7 +26,22 @@ dev = [
     "mypy",
     "pytest",
     "ruff",
-    "types-pyyaml"
+    "types-pyyaml",
+    "bs4",
+    "duckduckgo-search",
+    "exa_py",
+    "nest_asyncio",
+    "openai",
+    "pgvector",
+    "phidata",
+    "psycopg[binary]",
+    "pypdf",
+    "sqlalchemy",
+    "streamlit",
+    "yfinance",
+    "duckdb",
+    "pandas",
+    "matplotlib"
 ]
 docker = [
     "docker"
