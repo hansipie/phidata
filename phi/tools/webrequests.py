@@ -1,6 +1,7 @@
+from typing import Optional
 from phi.tools import Toolkit
 from phi.utils.log import logger
-
+from requests.exceptions import HTTPError
 
 class WebRequestsTools(Toolkit):
     def __init__(
@@ -23,13 +24,20 @@ class WebRequestsTools(Toolkit):
         """
         import requests
 
+        logger.info(f"GET request: {url}")
         try:
-            logger.debug(f"GET request to: {url}")
             response = requests.get(url)
-            return response.text
+            response.raise_for_status()
+        except HTTPError as http_e:
+            logger.warning(f"HTTP error: {http_e}")
+            return f"HTTP error: {http_e}"
         except Exception as e:
-            logger.error(f"Error making GET request: {e}")
-            return f"Error making GET request: {e}"
+            logger.warning(f"Other error: {e}")
+            return f"Other error: {e}"
+        else:
+            logger.debug(f"HTTP GET response status code: {response.status_code}")
+            logger.debug(f"HTTP GET response size: {response.headers['Content-Length']}")
+            return response.content
 
     def post_method(self, url: str, payload: str = "") -> str:
         """This function sends a POST request with an optionnal payload to a URL and returns the content.
@@ -40,10 +48,17 @@ class WebRequestsTools(Toolkit):
         """
         import requests
 
+        logger.info(f"POST request: {url}")
         try:
-            logger.debug(f"POST request to: {url}")
             response = requests.post(url, data=payload)
-            return response.text
+            response.raise_for_status()
+        except HTTPError as http_e:
+            logger.warning(f"HTTP error: {http_e}")
+            return f"HTTP error: {http_e}"
         except Exception as e:
-            logger.error(f"Error making POST request: {e}")
-            return f"Error making POST request: {e}"
+            logger.warning(f"Other HTTP error: {e}")
+            return f"Other HTTP error: {e}"
+        else:
+            logger.debug(f"HTTP POST response status code: {response.status_code}")
+            logger.debug(f"HPPT POST response size: {response.headers['Content-Length']}")
+            return response.content
