@@ -5,6 +5,7 @@ import streamlit as st
 from phi.assistant import Assistant
 from phi.document import Document
 from phi.document.reader.pdf import PDFReader
+from phi.document.reader.text import TextReader
 from phi.document.reader.website import WebsiteReader
 from phi.utils.log import logger
 
@@ -55,7 +56,7 @@ def main() -> None:
     file_tools = st.sidebar.checkbox("File Tools", value=file_tools_enabled, help="Enable file tools.")
     if file_tools_enabled != file_tools:
         st.session_state["file_tools_enabled"] = file_tools
-        file_tools_enabled = file_tools
+        file_tools_enabled = PDFReader
         restart_assistant()
 
     # Enable Web Search via DuckDuckGo
@@ -230,24 +231,38 @@ def main() -> None:
                     st.session_state[f"{input_url}_uploaded"] = True
                 alert.empty()
 
-        # Add PDFs to knowledge base
+        # Add PDFs or TXTs to knowledge base
         if "file_uploader_key" not in st.session_state:
             st.session_state["file_uploader_key"] = 100
 
         uploaded_file = st.sidebar.file_uploader(
-            "Add a PDF :page_facing_up:", type="pdf", key=st.session_state["file_uploader_key"]
+            "Add a PDF :page_facing_up:", type=["pdf", "txt"], key=st.session_state["file_uploader_key"]
         )
         if uploaded_file is not None:
-            alert = st.sidebar.info("Processing PDF...", icon="🧠")
+            alert = st.sidebar.info("Processing file...", icon="🧠")
             auto_rag_name = uploaded_file.name.split(".")[0]
+            auto_rag_extension = uploaded_file.name.split(".")[1]
+            logger.debug(f"uploaded file : {auto_rag_name}.{auto_rag_extension}")
             if f"{auto_rag_name}_uploaded" not in st.session_state:
-                reader = PDFReader()
-                auto_rag_documents: List[Document] = reader.read(uploaded_file)
-                if auto_rag_documents:
-                    llm_os.knowledge_base.load_documents(auto_rag_documents, upsert=True)
+                if auto_rag_extension == "pdf":
+                    reader = PDFReader()
+                    auto_rag_documents: List[Document] = reader.read(uploaded_file)
+                    if auto_rag_documents:
+                        llm_os.knowledge_base.load_documents(auto_rag_documents, upsert=True)
+                    else:
+                        st.sidebar.error("Could not read PDF")
+                    st.session_state[f"{auto_rag_name}_uploaded"] = True
+                elif auto_rag_extension == "txt":
+                    reader = TextReader()
+                    file_content = uploaded_file.read().decode("utf-8")
+                    auto_rag_documents: List[Document] = reader.read(file_content)
+                    if auto_rag_documents:
+                        llm_os.knowledge_base.load_documents(auto_rag_documents, upsert=True)
+                    else:
+                        st.sidebar.error("Could not read text")
+                    st.session_state[f"{auto_rag_name}_uploaded"] = True
                 else:
-                    st.sidebar.error("Could not read PDF")
-                st.session_state[f"{auto_rag_name}_uploaded"] = True
+                    st.sidebar.error("Could not read file")
             alert.empty()
 
     if llm_os.knowledge_base and llm_os.knowledge_base.vector_db:
