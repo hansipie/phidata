@@ -236,7 +236,7 @@ def main() -> None:
             st.session_state["file_uploader_key"] = 100
 
         uploaded_file = st.sidebar.file_uploader(
-            "Add a PDF :page_facing_up:", type=["pdf", "txt"], key=st.session_state["file_uploader_key"]
+            "Add a file :page_facing_up:", type=["pdf", "txt"], key=st.session_state["file_uploader_key"]
         )
         if uploaded_file is not None:
             alert = st.sidebar.info("Processing file...", icon="🧠")
