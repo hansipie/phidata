@@ -229,7 +229,14 @@ class S2AssistantStorage(AssistantStorage):
                 )
         return self.read(run_id=row.run_id)
 
-    def delete(self) -> None:
+    def delete(self, run_id: Optional[str] = None) -> None:
         if self.table_exists():
-            logger.info(f"Deleting table: {self.table_name}")
-            self.table.drop(self.db_engine)
+            with self.Session() as sess, sess.begin():
+                if run_id is None:
+                    logger.debug(f"Deleting all rows from table: {self.table_name}")
+                    sess.execute(self.table.delete())
+                else:
+                    logger.debug(f"Deleting run id: {run_id}")
+                    sess.execute(self.table.delete().where(self.table.c.run_id == run_id))
+        else:
+            logger.debug(f"Table does not exist: {self.table_name}")

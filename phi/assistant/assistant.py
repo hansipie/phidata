@@ -492,6 +492,21 @@ class Assistant(BaseModel):
                 self._api_log_assistant_run()
         return self.run_id
 
+    def delete_run(self, run_id: Optional[str] = None) -> None:
+        """Delete a run from storage."""
+        if self.storage is not None:
+            run_id_to_delete = run_id or self.run_id
+            if run_id_to_delete is not None:
+                logger.debug(f"-*- Deleting assistant run: {run_id_to_delete}")
+                self.storage.delete(run_id=run_id_to_delete)
+                if run_id_to_delete == self.run_id:
+                    self.run_id = None
+                    self.db_row = None
+            else:
+                raise ValueError("No run_id specified for deletion.")
+        else:
+            logger.warning("No storage configured. Unable to delete run.")
+
     def get_json_output_prompt(self) -> str:
         json_output_prompt = "\nProvide your output as a JSON containing the following fields:"
         if self.output_model is not None:

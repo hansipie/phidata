@@ -282,9 +282,39 @@ def main() -> None:
                 run_id=new_llm_os_run_id,
             )
             st.rerun()
+        st.sidebar.caption(f"current: {st.session_state["llm_os_run_id"]}")
 
-    if st.sidebar.button("New Run"):
+    col1, col2 = st.sidebar.columns(2)
+    if col1.button("New Run"):
         restart_assistant()
+
+    if col2.button("Delete Run"):
+        try:
+            llm_os.delete_run()
+            llm_os_run_ids: List[str] = llm_os.storage.get_all_run_ids()
+            logger.debug(f"All runs: {llm_os_run_ids}")
+            if not llm_os_run_ids:
+                restart_assistant()
+            else:
+                new_llm_os_run_id = llm_os_run_ids[0]
+                logger.info(f"---*--- Loading {llm_id} run: {new_llm_os_run_id} ---*---")
+                st.session_state["llm_os"] = get_llm_os(
+                    llm_id=llm_id,
+                    calculator=calculator_enabled,
+                    ddg_search=ddg_search_enabled,
+                    file_tools=file_tools_enabled,
+                    shell_tools=shell_tools_enabled,
+                    data_analyst=data_analyst_enabled,
+                    python_assistant=python_assistant_enabled,
+                    research_assistant=research_assistant_enabled,
+                    investment_assistant=investment_assistant_enabled,
+                    run_id=new_llm_os_run_id,
+                )
+                st.rerun()
+
+        except Exception as e:
+            st.warning("Could not delete LLM OS run, is the database running?")
+            logger.debug(f"Exception deleting run: {e}")
 
 
 def restart_assistant():
