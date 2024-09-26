@@ -26,5 +26,5 @@ class AssistantStorage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def delete(self) -> None:
+    def delete(self, run_id: Optional[str] = None) -> None:
         raise NotImplementedError
