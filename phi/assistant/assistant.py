@@ -535,7 +535,9 @@ class Assistant(BaseModel):
 
                     if len(output_model_properties) > 0:
                         json_output_prompt += "\n<json_fields>"
-                        json_output_prompt += f"\n{json.dumps(list(output_model_properties.keys()))}"
+                        json_output_prompt += (
+                            f"\n{json.dumps([key for key in output_model_properties.keys() if key != '$defs'])}"
+                        )
                         json_output_prompt += "\n</json_fields>"
                         json_output_prompt += "\nHere are the properties for each field:"
                         json_output_prompt += "\n<json_field_properties>"
@@ -885,6 +887,10 @@ class Assistant(BaseModel):
             if user_prompt_message is not None:
                 llm_messages += [user_prompt_message]
 
+        # Track the number of messages in the run_messages that SHOULD NOT BE ADDED TO MEMORY
+        # -1 is used to exclude the user message from the count as the user message should be added to memory
+        num_messages_to_skip = len(llm_messages) - 1
+
         # -*- Generate a response from the LLM (includes running function calls)
         llm_response = ""
         self.llm = cast(LLM, self.llm)
@@ -915,8 +921,10 @@ class Assistant(BaseModel):
             self.memory.add_references(references=references)
 
         # Add llm messages to the memory
-        # This includes the raw system messages, user messages, and llm messages
-        self.memory.add_llm_messages(messages=llm_messages)
+        # Only add messages from this particular run to the memory
+        run_messages = llm_messages[num_messages_to_skip:]
+        # Add all messages including and after the user message to the memory
+        self.memory.add_llm_messages(messages=run_messages)
 
         # -*- Update run output
         self.output = llm_response
@@ -1086,6 +1094,10 @@ class Assistant(BaseModel):
             if user_prompt_message is not None:
                 llm_messages += [user_prompt_message]
 
+        # Track the number of messages in the run_messages that SHOULD NOT BE ADDED TO MEMORY
+        # -1 is used to exclude the user message from the count as the user message should be added to memory
+        num_messages_to_skip = len(llm_messages) - 1
+
         # -*- Generate a response from the LLM (includes running function calls)
         llm_response = ""
         self.llm = cast(LLM, self.llm)
@@ -1117,8 +1129,10 @@ class Assistant(BaseModel):
             self.memory.add_references(references=references)
 
         # Add llm messages to the memory
-        # This includes the raw system messages, user messages, and llm messages
-        self.memory.add_llm_messages(messages=llm_messages)
+        # Only add messages from this particular run to the memory
+        run_messages = llm_messages[num_messages_to_skip:]
+        # Add all messages including and after the user message to the memory
+        self.memory.add_llm_messages(messages=run_messages)
 
         # -*- Update run output
         self.output = llm_response
